@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+#/ command: derkach:stanislav: "writing env variables"
+#/ usage: rerun derkach:stanislav [options]
+#/ rerun-variables: RERUN, RERUN_VERSION, RERUN_MODULES, RERUN_MODULE_DIR
+#/ option-variables: 
+
+. "$RERUN_MODULE_DIR/lib/functions.sh" "stanislav" || { 
+  echo >&2 "Failed loading function library." ; exit 1 ; 
+}
+
+set -o errexit -o nounset -o pipefail
+
+rerun_options_parse "$@"
+
+# Command implementation
+# ----------------------
+
+awk -F'=' '{ if (length($2) != 0)
+  print "\033[31m\033[1m" $1 "\033[0m = "  "\033[33m" $2 "\033[0m"
+}' <<< "$(env)"
+
+
+# Done. Exit with last command exit status.
+exit $?
+
